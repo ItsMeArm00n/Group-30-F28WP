@@ -22,7 +22,7 @@ async function createUser(name, username, password, role) {
     );
   if ((await q("SELECT 1 FROM users WHERE username=?", [username])).length)
     fail(409, "That username is taken");
-  const hash = hashPassword(password); // salted hash, the plain password is never stored
+  const hash = await hashPassword(password); // bcrypt hash; the plain password is never stored
   return (
     await q(
       "INSERT INTO users (name,username,pass_hash,role) VALUES (?,?,?,?)",

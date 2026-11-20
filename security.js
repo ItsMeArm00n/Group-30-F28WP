@@ -1,19 +1,8 @@
-const crypto = require("crypto");
+const bcrypt = require("bcrypt");
 
-// Password hashes use Node's built-in crypto module, so no extra package is needed.
-// A different random salt is stored with every password hash.
-const hashPassword = (password) => {
-  const salt = crypto.randomBytes(16).toString("hex");
-  const hash = crypto.scryptSync(password, salt, 64).toString("hex");
-  return salt + ":" + hash;
-};
-const checkPassword = (password, stored) => {
-  const parts = String(stored).split(":");
-  if (parts.length !== 2) return false;
-  const hash = crypto.scryptSync(password, parts[0], 64).toString("hex");
-  return crypto.timingSafeEqual(
-    Buffer.from(hash, "hex"),
-    Buffer.from(parts[1], "hex"),
-  );
-};
+// bcrypt generates and stores a different salt in every password hash.
+// The plain password is never stored in the database.
+const hashPassword = (password) => bcrypt.hash(String(password), 10);
+const checkPassword = (password, stored) =>
+  bcrypt.compare(String(password), String(stored));
 module.exports = { hashPassword, checkPassword };

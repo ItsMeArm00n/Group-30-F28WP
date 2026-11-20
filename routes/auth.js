@@ -11,7 +11,7 @@ const sessionFor = (u) => ({
 router.post("/login", async (req, res) => {
   const b = req.body || {},
     [u] = await q("SELECT * FROM users WHERE username=?", [s(b.u)]); // ? placeholder: no SQL injection
-  if (!u || !checkPassword(String(b.p || ""), u.pass_hash))
+  if (!u || !(await checkPassword(String(b.p || ""), u.pass_hash)))
     fail(401, "Wrong username or password");
   if (b.role && u.role !== b.role)
     fail(403, "This account belongs to the " + u.role + " app");
@@ -43,12 +43,12 @@ router.put("/profile", need(), async (req, res) => {
     const [u] = await q("SELECT pass_hash FROM users WHERE id=?", [
       req.user.id,
     ]);
-    if (!checkPassword(String(b.current || ""), u.pass_hash))
+    if (!(await checkPassword(String(b.current || ""), u.pass_hash)))
       fail(401, "Current password is wrong");
     if (String(b.p).length < 4)
       fail(400, "New password needs 4 or more characters");
     await q("UPDATE users SET pass_hash=? WHERE id=?", [
-      hashPassword(String(b.p)),
+      await hashPassword(String(b.p)),
       req.user.id,
     ]);
   }

@@ -33,9 +33,9 @@ This covers meaningful database create, retrieve, update and delete operations. 
 - `db.js` and `schema.sql` - MySQL connection pool, database setup and sample data.
 - `routes/` - separate Express routers for authentication, restaurant features and administration.
 - `middleware/auth.js` - login token lookup and role-based access control.
-- `util.js` - input checks and password hashing with Node's built-in `crypto` module.
+- `util.js` and `security.js` - input checks and password hashing with `bcrypt`.
 - `public/` - HTML, CSS, JavaScript and jQuery user interfaces.
 
 ## Security and validation
 
-All database values use MySQL parameter placeholders. User input is validated on the server and escaped before insertion into dynamic client-side HTML. Passwords are salted and hashed; only the hash is stored. Route middleware prevents users from accessing another role's pages or another owner's restaurant data.
+All database values use MySQL parameter placeholders. User input is validated on the server and escaped before insertion into dynamic client-side HTML. Passwords use bcrypt hashing with a salt; only the hash is stored. Route middleware prevents users from accessing another role's pages or another owner's restaurant data.

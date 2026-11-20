@@ -5,9 +5,10 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "check": "node --check server.js && node --check db.js && node --check util.js && node --check routes/auth.js && node --check routes/restaurants.js && node --check routes/admin.js && node --check middleware/auth.js"
+    "check": "node --check server.js && node --check db.js && node --check util.js && node --check security.js && node --check routes/auth.js && node --check routes/restaurants.js && node --check routes/admin.js && node --check middleware/auth.js"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "dotenv": "^18.0.10",
     "express": "^5.3.0",
     "mysql": "^2.18.1"

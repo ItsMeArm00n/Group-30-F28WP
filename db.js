@@ -38,7 +38,9 @@ async function seed(con) {
     ["Omar Owner", "owner2", "owner123", "owner"],
     ["Lina Hassan", "lina", "lina123", "customer"],
   ];
-  const users = U.map((u) => [u[0], u[1], hashPassword(u[2]), u[3]]);
+  const users = await Promise.all(
+    U.map(async (u) => [u[0], u[1], await hashPassword(u[2]), u[3]]),
+  );
   await run(con, "INSERT INTO users (name,username,pass_hash,role) VALUES ?", [
     users,
   ]);

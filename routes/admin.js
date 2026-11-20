@@ -40,7 +40,7 @@ router.put("/users/:id", async (req, res) => {
   if (p && p.length < 4) fail(400, "Password needs 4 or more characters");
   if (p)
     await q("UPDATE users SET pass_hash=? WHERE id=? AND role<>?", [
-      hashPassword(p),
+      await hashPassword(p),
       id,
       "admin",
     ]);
