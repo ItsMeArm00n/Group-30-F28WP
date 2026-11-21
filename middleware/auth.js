@@ -1,10 +1,10 @@
-const crypto = require("crypto"),
+const bcrypt = require("bcrypt"),
   { q } = require("../db"),
   { fail } = require("../util");
 const sessions = new Map(); // login token -> user id (in memory, so a restart logs everyone out)
-// crypto is a Node core module (no install). It is only used to make unpredictable session tokens.
-const newSession = (id) => {
-  const t = crypto.randomBytes(24).toString("hex");
+// bcrypt generates a unique salted value for each in-memory session token.
+const newSession = async (id) => {
+  const t = await bcrypt.hash(`${id}:${Date.now()}:${Math.random()}`, 10);
   sessions.set(t, id);
   return t;
 };

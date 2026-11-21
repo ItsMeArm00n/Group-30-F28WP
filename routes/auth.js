@@ -3,8 +3,8 @@ const { q } = require("../db"),
   { need, newSession, endSession } = require("../middleware/auth"),
   { s, fail, createUser } = require("../util"),
   { hashPassword, checkPassword } = require("../security");
-const sessionFor = (u) => ({
-  token: newSession(u.id),
+const sessionFor = async (u) => ({
+  token: await newSession(u.id),
   user: { id: u.id, name: u.name, role: u.role },
 });
 
@@ -15,12 +15,12 @@ router.post("/login", async (req, res) => {
     fail(401, "Wrong username or password");
   if (b.role && u.role !== b.role)
     fail(403, "This account belongs to the " + u.role + " app");
-  res.json(sessionFor(u));
+  res.json(await sessionFor(u));
 });
 router.post("/register", async (req, res) => {
   const b = req.body || {},
     id = await createUser(b.name, b.u, b.p, "customer"); // public sign-up is always a customer
-  res.json(sessionFor({ id, name: s(b.name, 60), role: "customer" }));
+  res.json(await sessionFor({ id, name: s(b.name, 60), role: "customer" }));
 });
 router.post("/logout", (req, res) => {
   endSession(req.token);
